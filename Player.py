@@ -79,3 +79,8 @@ class Player(object):
             pieces.append(King(5, 1))
 
         self.pieces = pieces
+
+    def remove_passable(self):
+        for piece in self.pieces:
+            if piece.typeOf() == "Pawn":
+                piece.passable=False
