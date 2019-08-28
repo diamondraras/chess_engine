@@ -10,7 +10,6 @@ class Pawn(Piece):
 
     def changePosition(self, destination_position,player, game):
         possibles_moves = self.getPossiblesMoves(player)
-        # print( Position(xDst, yDst) in possibles_moves)
         if destination_position.isIn(possibles_moves):
             self.checkPassable(destination_position)
             self.moved = True
@@ -21,14 +20,36 @@ class Pawn(Piece):
     def checkPassable(self, destination_position):
         if abs(self.positions.y - destination_position.y) == 2:
             self.passable = True
-
-    def getPossiblesMoves(self, player):
-        Pmoves = list()
-        
+            
+    def getCapturablePositions(self, player):
+        direction = self.getDirection(player)
+        capturable_positions = list()
+        # Capture left move
+        try:
+            left_capture_move = Position(self.positions.x - 1, self.positions.y + (direction * 1))
+            if player.opponent.hasPiece(left_capture_move):
+                capturable_positions.append(left_capture_move)
+        except Exception:
+            pass
+        # Capture right move
+        try:
+            right_capture_move = Position(self.positions.x + 1, self.positions.y + (direction * 1))
+            if player.opponent.hasPiece(right_capture_move):
+                capturable_positions.append(right_capture_move)
+        except Exception:
+            pass
+        return capturable_positions
+    def getDirection(self, player):
         if player.color == "white":
             direction = 1
         else:
             direction = -1
+        return direction
+
+    def getPossiblesMoves(self, player):
+        Pmoves = list()
+        
+        direction = self.getDirection(player)
         
         # Normal move
         try:
@@ -47,21 +68,11 @@ class Pawn(Piece):
         except Exception:
             pass
             
-        # Capture left move
-        try:
-            left_capture_move = Position(self.positions.x - 1, self.positions.y + (direction * 1))
-            if player.opponent.hasPiece(left_capture_move):
-                Pmoves.append(left_capture_move)
-        except Exception:
-            pass
-        
-        # Capture right move
-        try:
-            right_capture_move = Position(self.positions.x + 1, self.positions.y + (direction * 1))
-            if player.opponent.hasPiece(right_capture_move):
-                Pmoves.append(right_capture_move)
-        except Exception:
-            pass
+        # Capturable positions
+        capturable_positions = self.getCapturablePositions(player)
+        print(capturable_positions)
+        if len(capturable_positions):
+            Pmoves= Pmoves +capturable_positions
         
         
         # En passant Left

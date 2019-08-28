@@ -15,10 +15,14 @@ class Player(object):
     def movePiece(self, sourcePosition, destinationPosition, game):
 
         piece = self.findPiece(sourcePosition)
-        print(self.color +" "+ str(destinationPosition))
+        # print(self.color +" "+ str(destinationPosition))
         piece.changePosition(destinationPosition, self, game)
 
-
+    def getKing(self):
+        for piece in self.pieces:
+            if piece.typeOf() == "King":
+                return piece
+            
     def findPiece(self,positions):
         for piece in self.pieces:
             if piece.positions.equals(positions):

@@ -1,13 +1,20 @@
+from Piece import *
+from Piece.Pawn import *
+from Piece.Rook import *
+from Piece.Knight import *
+from Piece.Bishop import *
+from Piece.Queen import *
+from Piece.King import *
+
+
 from Game import *
-chess = Game()
-chess.move("e2", "e4")
-chess.move("d7", "d5")
-chess.move("e4", "d5")
-chess.move("g8", "f6")
-chess.move("b1", "c3")
-chess.move("f6", "d5")
-chess.move("c3", "d5")
-chess.move("d8", "d5")
-chess.move("f1", "d3")
-chess.move("h8", "g8")
-print(chess.black_player.pieces)
+game = Game()
+game.clearBoard()
+
+game.white_player.pieces.append(King(2, 3))
+game.black_player.pieces.append(King(2, 5))
+
+print(game.black_player.pieces)
+print(game.white_player.pieces)
+
+game.move("b3", "b4")

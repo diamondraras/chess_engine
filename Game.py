@@ -27,3 +27,7 @@ class Game():
     
     def canContinue(self, sourcePosition, destinationPosition):
         self.moves.append((sourcePosition, destinationPosition))
+
+    def clearBoard(self):
+        self.white_player.pieces = []
+        self.black_player.pieces = []
