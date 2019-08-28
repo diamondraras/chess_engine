@@ -21,22 +21,21 @@ class Player(object):
 
     def findPiece(self,positions):
         for piece in self.pieces:
-            if piece.positions.equals(positions.x, positions.y):
+            if piece.positions.equals(positions):
                 return piece
         raise PositionException("No matching piece in x="+str(positions.x)+",y="+str(positions.y))
 
     def hasPiece(self, positions):
         for piece in self.pieces:
-            if piece.positions.equals(positions.x,positions.y):
+            if piece.positions.equals(positions):
                 return True
         return False
-
 
     def new_game(self):
         pieces = list()
 
         # Pawn initialisation
-        for i in range(1,8):
+        for i in range(1,9):
             if self.color == "black":
                 pieces.append(Pawn(i, 7))
             if self.color == "white":
@@ -83,4 +82,9 @@ class Player(object):
     def remove_passable(self):
         for piece in self.pieces:
             if piece.typeOf() == "Pawn":
-                piece.passable=False
+                piece.passable = False
+
+    def remove_piece(self, positions):
+       for i, piece in enumerate(self.pieces):
+            if piece.positions.equals(positions):
+                del self.pieces[i]

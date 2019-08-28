@@ -8,7 +8,7 @@ class Pawn(Piece):
         self.moved = False
         self.passable = False
 
-    def changePosition(self, destination_position, player, game):
+    def changePosition(self, destination_position,player, game):
         possibles_moves = self.getPossiblesMoves(player)
         print(possibles_moves)
         # print( Position(xDst, yDst) in possibles_moves)
@@ -20,7 +20,6 @@ class Pawn(Piece):
             raise PositionException("impossible pawn's move")
     
     def checkPassable(self, destination_position):
-        print(abs(self.positions.y - destination_position.y))
         if abs(self.positions.y - destination_position.y) == 2:
             self.passable = True
 
@@ -71,16 +70,16 @@ class Pawn(Piece):
             left_en_passant_opponent = Position(self.positions.x - 1, self.positions.y)
             left_en_passant_destination = Position(self.positions.x - 1, self.positions.y + (direction))
             
-            if player.opponent.hasPiece(left_en_passant) and player.opponent.findPiece(left_en_passant).passable:
+            if player.opponent.hasPiece(left_en_passant_opponent) and player.opponent.findPiece(left_en_passant_opponent).passable:
                 Pmoves.append(left_en_passant_destination)
         except Exception:
             pass
         
         # En passant Right
         try:
-            right_en_passant = Position(self.positions.x + 1, self.positions.y)
-            right_en_passant_destination = Position(self.positions.x - 1, self.positions.y + (direction))
-            if player.opponent.hasPiece(right_en_passant) and player.opponent.findPiece(right_en_passant).passable:
+            right_en_passant_opponent = Position(self.positions.x + 1, self.positions.y)
+            right_en_passant_destination = Position(self.positions.x + 1, self.positions.y + (direction))
+            if player.opponent.hasPiece(right_en_passant_opponent) and player.opponent.findPiece(right_en_passant_opponent).passable:
                 Pmoves.append(right_en_passant_destination)
         except Exception:
             pass

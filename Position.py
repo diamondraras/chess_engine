@@ -5,8 +5,8 @@ class Position():
         self.x = x
         self.y = y
 
-    def equals(self, x, y):
-        if self.x==x and self.y==y:
+    def equals(self,positions):
+        if self.x==positions.x and self.y==positions.y:
             return True
         else:
             return False
@@ -23,7 +23,7 @@ class Position():
 
     def isIn(self, possibles_moves):
         for move in possibles_moves:
-            if self.equals(move.x, move.y):
+            if self.equals(move):
                 return True
         return False
     
