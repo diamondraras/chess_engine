@@ -6,5 +6,6 @@ chess.move("e4", "d5")
 chess.move("g8", "f6")
 chess.move("b1", "c3")
 chess.move("f6", "d5")
-
+chess.move("c3", "d5")
+chess.move("d8", "d5")
 print(chess.white_player.pieces)
