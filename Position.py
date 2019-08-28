@@ -13,7 +13,7 @@ class Position():
         
     def __setattr__(self, attr_name, attr_val):
         if attr_name == "x" or attr_name == "y":
-            if attr_val < 9:
+            if attr_val < 9 and attr_val > 0:
                 object.__setattr__(self, attr_name, attr_val)
             else:
                 raise PositionException("Positions must in chessboard")

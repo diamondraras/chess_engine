@@ -10,7 +10,6 @@ class Pawn(Piece):
 
     def changePosition(self, destination_position,player, game):
         possibles_moves = self.getPossiblesMoves(player)
-        print(possibles_moves)
         # print( Position(xDst, yDst) in possibles_moves)
         if destination_position.isIn(possibles_moves):
             self.checkPassable(destination_position)
