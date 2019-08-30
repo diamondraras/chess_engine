@@ -10,9 +10,7 @@ class Game():
         self.white_player = Player('white')
         self.black_player.opponent = self.white_player
         self.white_player.opponent = self.black_player
-        self.check = False
-        self.checkmate = False
-        self.draws = False
+
 
     def move(self, src, dst):
         xSrc, ySrc = toNumberCoord(src)
@@ -20,10 +18,11 @@ class Game():
 
         source = Position(xSrc, ySrc)
         destination = Position(xDst, yDst)
-        if len(self.moves) % 2==0:
-            self.white_player.movePiece(source, destination, self)
+        if len(self.moves) % 2 == 0:
+            current_player = self.white_player
         else:
-            self.black_player.movePiece(source, destination, self)
+            current_player = self.black_player
+        current_player.movePiece(source, destination, self)
     
     def canContinue(self, sourcePosition, destinationPosition):
         self.moves.append((sourcePosition, destinationPosition))

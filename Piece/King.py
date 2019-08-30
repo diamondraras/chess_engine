@@ -3,9 +3,8 @@ from Position import *
 class King(Piece):
     def changePosition(self, destination_position, player, game):
         possibles_moves = self.getPossiblesMoves(player)
-        # print(possibles_moves)
         if destination_position.isIn(possibles_moves):
-            self.verified_positions(destination_position, player, game)
+            self.canContinue(destination_position, player, game)
         else:
             raise PositionException("impossible king's move")
 
@@ -16,7 +15,15 @@ class King(Piece):
                 dangerous_positions = dangerous_positions + piece.getPossiblesMoves(player.opponent)
             if piece.typeOf() == "Pawn":
                 dangerous_positions += piece.getCapturablePositions(player.opponent)
-        return dangerous_positions
+            # if piece.typeOf() == "Queen":
+            #     print(piece.getPossiblesMoves(player.opponent))
+        
+        filtered_result = list()
+        for dp in dangerous_positions:
+            if not dp.isIn(filtered_result):
+                filtered_result.append(dp)
+
+        return filtered_result
 
     def getCapabilities(self, player):
         king_capabilites = list()
@@ -56,5 +63,4 @@ class King(Piece):
         for move in king_capabilites:
             if not move.isIn(dangerous_positions) and not move.isIn(possibles_moves):
                 possibles_moves.append(move)
-        print(possibles_moves)
         return possibles_moves

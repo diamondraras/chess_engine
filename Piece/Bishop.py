@@ -4,7 +4,7 @@ class Bishop(Piece):
     def changePosition(self, destination_position, player, game):
         possibles_moves = self.getPossiblesMoves(player)
         if destination_position.isIn(possibles_moves):
-            self.verified_positions(destination_position, player, game)
+            self.canContinue(destination_position, player, game)
         else:
             raise PositionException("impossible bishop's move")
     def getPossiblesMoves(self, player):

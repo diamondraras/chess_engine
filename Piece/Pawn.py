@@ -13,7 +13,7 @@ class Pawn(Piece):
         if destination_position.isIn(possibles_moves):
             self.checkPassable(destination_position)
             self.moved = True
-            self.verified_positions(destination_position, player, game)
+            self.canContinue(destination_position, player, game)
         else:
             raise PositionException("impossible pawn's move")
     
@@ -70,7 +70,6 @@ class Pawn(Piece):
             
         # Capturable positions
         capturable_positions = self.getCapturablePositions(player)
-        print(capturable_positions)
         if len(capturable_positions):
             Pmoves= Pmoves +capturable_positions
         
