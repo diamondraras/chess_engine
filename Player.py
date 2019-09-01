@@ -7,6 +7,7 @@ from Piece.Queen import *
 from Piece.King import *
 from ChessRulesExceptions import PositionException
 from ChessRulesExceptions import CheckException
+from ChessRulesExceptions import CheckMateException
 from Position import *
 from copy import *
 class Player(object):
@@ -18,6 +19,8 @@ class Player(object):
         self.draws = False
     
     def movePiece(self, sourcePosition, destinationPosition, game):
+        if self.checkmated:
+            raise CheckMateException(self.color+" is already checkmated !")
         piece = self.findPiece(sourcePosition)
         if not self.checked:
             piece.changePosition(destinationPosition, self, game)
@@ -115,26 +118,31 @@ class Player(object):
             if piece.positions.equals(positions):
                 del self.pieces[i]
 
+    def checkmate(self):
+        self.checkmated = False
+        king = self.getKing()
+        king_dangerous_positions = king.getDangerousPositions(self)
+        king_in_danger = king.positions.isIn(king_dangerous_positions)
+        if king_in_danger:
+            self.checked = True
+            mateable = True
+            for piece in self.pieces:
+                # print(piece.getPossiblesMoves(self))
+
+                for move in piece.getPossiblesMoves(self):
+                    if self.acceptable(piece.positions, move):
+                        print(move)
+                        mateable = False
+                        break
+                if not mateable:
+                    break
+            if mateable:
+                self.checkmated = True
+
     def check(self):
         self.checked = False
         king = self.getKing()
         king_dangerous_positions = king.getDangerousPositions(self)
-        # print(king_dangerous_positions)
         king_in_danger = king.positions.isIn(king_dangerous_positions)
-        # king_capabilities = king.getCapabilities(self)
-
         if king_in_danger:
             self.checked = True
-            
-        # mate = False
-        # for king_capability in king_capabilities:
-        #     mate = True
-        #     if king_capability.isIn(king_dangerous_positions) and king_in_danger:
-        #         pass
-        #     else:
-        #         mate = False
-        #         break
-
-        # if mate:
-        #     self.checkmated = True
-            

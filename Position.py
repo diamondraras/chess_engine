@@ -1,4 +1,6 @@
 from ChessRulesExceptions import PositionException
+from copy import *
+
 
 class Position():
     def __init__(self, x, y):
@@ -10,7 +12,23 @@ class Position():
             return True
         else:
             return False
-        
+
+    def isDefended(self, player):
+        temp_player = copy(player)
+        all_pieces = temp_player.pieces
+        piece_to_remove = temp_player.findPiece(self)
+        index_of_piece = all_pieces.index(piece_to_remove)
+        temp_piece = all_pieces[index_of_piece]
+        del temp_player.pieces[index_of_piece]
+        moves_without_piece = list()
+        for piece in temp_player.pieces:
+            moves_without_piece = moves_without_piece + piece.getPossiblesMoves(temp_player)
+        temp_player.pieces.append(temp_piece)
+        if self.isIn(moves_without_piece):
+            return True
+        else:
+            return False
+
     def __setattr__(self, attr_name, attr_val):
         if attr_name == "x" or attr_name == "y":
             if attr_val < 9 and attr_val > 0:

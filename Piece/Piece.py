@@ -16,6 +16,7 @@ class Piece():
         if player.opponent.hasPiece(destination_position):
             player.opponent.remove_piece(destination_position)
         player.opponent.check()
+        player.opponent.checkmate()
     def typeOf(self):
         return type(self).__name__
 

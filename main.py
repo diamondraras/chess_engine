@@ -9,18 +9,16 @@ from Piece.King import *
 
 from Game import *
 game = Game()
-# game.clearBoard()
+game.clearBoard()
 
-# game.black_player.pieces.append(King(2, 5))
-# game.white_player.pieces.append(King(4, 3))
+game.black_player.pieces.append(King(2, 1))
+game.white_player.pieces.append(King(2, 3))
+game.white_player.pieces.append(Queen(4, 2))
 
-game.move("e2", "e4") #white
-game.move("d7", "d5") #black
-game.move("e4", "d5") #white
-game.move("d8", "d5") #black
-game.move("b1", "c3") #white
-game.move("d5", "e5")  #black
-game.move("c3", "b5")
-# game.move("g1", "e2") #white
-
+game.move("b3", "c2") #white
+game.move("b1", "a1")  #white
+game.move("d2", "a5")
+# game.move("b1", "a1") #white
+# game.move("d1", "e1") #black
+print(game.black_player.checkmated)
 # print(game.white_player.checked)

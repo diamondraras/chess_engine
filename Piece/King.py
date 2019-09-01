@@ -10,13 +10,13 @@ class King(Piece):
 
     def getDangerousPositions(self, player):
         dangerous_positions = list()
-        for piece in player.opponent.pieces:
-            if piece.typeOf() != "Pawn" and piece.typeOf()!="King":
+        for i,piece in enumerate(player.opponent.pieces):
+            if piece.typeOf() != "Pawn" and piece.typeOf() != "King":
                 dangerous_positions = dangerous_positions + piece.getPossiblesMoves(player.opponent)
             if piece.typeOf() == "Pawn":
                 dangerous_positions += piece.getCapturablePositions(player.opponent)
-            # if piece.typeOf() == "Queen":
-            #     print(piece.getPossiblesMoves(player.opponent))
+            if piece.typeOf() == "King":
+                dangerous_positions += piece.getCapabilities(player.opponent)
         
         filtered_result = list()
         for dp in dangerous_positions:
@@ -58,9 +58,12 @@ class King(Piece):
             elif not king_opponent_capability.isIn(king_opponent_dangerous_positions) and king_opponent_capability.isIn(king_capabilites) :
                 dangerous_positions.append(king_opponent_capability)
 
-
+        for king_capability in king_capabilites:
+            if player.opponent.hasPiece(king_capability) and king_capability.isDefended(player.opponent):
+                dangerous_positions.append(king_capability)
 
         for move in king_capabilites:
             if not move.isIn(dangerous_positions) and not move.isIn(possibles_moves):
                 possibles_moves.append(move)
         return possibles_moves
+    
