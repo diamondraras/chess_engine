@@ -1,9 +1,14 @@
 from Piece.Piece import *
 from Position import *
 class Rook(Piece):
+    def __init__(self, x, y):
+        super().__init__(x, y)
+        self.moved = False
+
     def changePosition(self, destination_position, player, game):
         possibles_moves = self.getPossiblesMoves(player)
         if destination_position.isIn(possibles_moves):
+            self.moved = True
             self.canContinue(destination_position, player, game)
         else:
             raise PositionException("impossible rook's move")

@@ -8,6 +8,7 @@ from Piece.King import *
 from ChessRulesExceptions import PositionException
 from ChessRulesExceptions import CheckException
 from ChessRulesExceptions import CheckMateException
+from ChessRulesExceptions import CastingException
 from Position import *
 from copy import *
 class Player(object):
@@ -30,7 +31,7 @@ class Player(object):
                 piece.changePosition(destinationPosition, self, game)
             else:
                 raise CheckException("Check positions must be prevented !")
-
+            
     def acceptable(self, sourcePosition, destinationPosition):
         tempPlayer = copy(self)
         all_pieces = tempPlayer.pieces
@@ -160,3 +161,45 @@ class Player(object):
             else :
                 self.draws = False
                 self.opponent.draws = False
+    
+    def getPieceIndex(self, positions):
+        for i, piece in enumerate(self.pieces):
+            if piece.positions.equals(positions):
+                return i
+        raise PositionException("No pieces found in " + positions)
+    
+
+    def smallCastling(self):
+        if self.color == "white":
+            knight_position = Position(7, 1)
+            bishop_position = Position(6, 1)
+            rook_position = Position(8, 1)
+        elif self.color == "black":
+            knight_position = Position(7, 8)
+            bishop_position = Position(6, 8)
+            rook_position = Position(8, 8)
+
+        possibles_opponent_moves = list()
+
+        for piece in self.opponent.pieces:
+            possibles_opponent_moves = possibles_opponent_moves + piece.getPossiblesMoves(self.opponent)
+        rook = self.findPiece(rook_position)
+        king = self.getKing()
+        bishop_not_here = not self.hasPiece(bishop_position)
+        knight_not_here = not self.hasPiece(knight_position)
+        movement = not rook.moved and not king.moved
+        smallCastlingPossible = movement \
+                                and bishop_not_here \
+                                and knight_not_here \
+                                and not bishop_position.isIn(possibles_opponent_moves) \
+                                and not knight_position.isIn(possibles_opponent_moves)
+        if smallCastlingPossible:
+            if self.color == "white":
+                self.pieces[self.getPieceIndex(rook_position)].positions = Position(6, 1)
+                self.pieces[self.getPieceIndex(king.positions)].positions = Position(7, 1)
+            elif self.color == "black":
+                self.pieces[self.getPieceIndex(rook_position)].positions = Position(6, 8)
+                self.pieces[self.getPieceIndex(king.positions)].positions = Position(7, 8)
+        else:
+            raise CastingException("small castling impossible")
+

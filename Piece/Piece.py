@@ -23,3 +23,5 @@ class Piece():
 
     def __repr__(self):
         return self.typeOf() + " " + str(self.positions) + "\n"
+
+    

@@ -24,6 +24,13 @@ class Game():
             current_player = self.black_player
         current_player.movePiece(source, destination, self)
     
+    def smallCastling(self):
+        if len(self.moves) % 2 == 0:
+            self.white_player.smallCastling()
+        else:
+            self.black_player.smallCastling()
+
+    
     def canContinue(self, sourcePosition, destinationPosition):
         self.moves.append((sourcePosition, destinationPosition))
 
