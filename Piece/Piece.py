@@ -17,6 +17,7 @@ class Piece():
             player.opponent.remove_piece(destination_position)
         player.opponent.check()
         player.opponent.checkmate()
+        player.opponent.drawsCheck()
     def typeOf(self):
         return type(self).__name__
 

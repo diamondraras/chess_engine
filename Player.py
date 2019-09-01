@@ -127,11 +127,8 @@ class Player(object):
             self.checked = True
             mateable = True
             for piece in self.pieces:
-                # print(piece.getPossiblesMoves(self))
-
                 for move in piece.getPossiblesMoves(self):
                     if self.acceptable(piece.positions, move):
-                        print(move)
                         mateable = False
                         break
                 if not mateable:
@@ -146,3 +143,20 @@ class Player(object):
         king_in_danger = king.positions.isIn(king_dangerous_positions)
         if king_in_danger:
             self.checked = True
+
+    def drawsCheck(self):
+        self.draws = False
+        king = self.getKing()
+        king_dangerous_positions = king.getDangerousPositions(self)
+        king_in_danger = king.positions.isIn(king_dangerous_positions)
+
+        possibles_moves = list()
+        if not king_in_danger and not self.checkmated:
+            for piece in self.pieces:
+                possibles_moves += piece.getPossiblesMoves(self)
+            if len(possibles_moves) == 0:
+                self.draws = True
+                self.opponent.draws = True
+            else :
+                self.draws = False
+                self.opponent.draws = False

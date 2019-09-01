@@ -11,14 +11,12 @@ from Game import *
 game = Game()
 game.clearBoard()
 
-game.black_player.pieces.append(King(2, 1))
-game.white_player.pieces.append(King(2, 3))
-game.white_player.pieces.append(Queen(4, 2))
+game.black_player.pieces.append(King(1, 1))
+game.black_player.pieces.append(Pawn(6, 1))
+# game.black_player.pieces.append(Knight(2, 6))
+game.white_player.pieces.append(King(1, 7))
+game.white_player.pieces.append(Queen(4, 3))
 
-game.move("b3", "c2") #white
-game.move("b1", "a1")  #white
-game.move("d2", "a5")
-# game.move("b1", "a1") #white
-# game.move("d1", "e1") #black
-print(game.black_player.checkmated)
-# print(game.white_player.checked)
+game.move("d3", "c2")
+
+print(game.black_player.draws)
