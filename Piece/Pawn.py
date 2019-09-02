@@ -1,3 +1,4 @@
+from Piece.Queen import *
 from Piece.Piece import *
 from Position import *
 from ChessRulesExceptions import PositionException
@@ -8,12 +9,22 @@ class Pawn(Piece):
         self.moved = False
         self.passable = False
 
+    def checkPromotion(self, player):
+        if player.color == "black":
+            y = 1
+        elif player.color == "white":
+            y = 8
+        print(self.positions)
+        if self.positions.y == y:
+            player.pieces[player.getPieceIndex(self.positions)] = Queen(self.positions.x, y)
+
     def changePosition(self, destination_position,player, game):
         possibles_moves = self.getPossiblesMoves(player)
         if destination_position.isIn(possibles_moves):
             self.checkPassable(destination_position)
             self.moved = True
             self.canContinue(destination_position, player, game)
+            self.checkPromotion(player)
         else:
             raise PositionException("impossible pawn's move")
     

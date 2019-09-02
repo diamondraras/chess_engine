@@ -9,25 +9,12 @@ from Piece.King import *
 
 from Game import *
 game = Game()
-# game.clearBoard()
+game.clearBoard()
 
-# game.black_player.pieces.append(King(1, 1))
-# game.black_player.pieces.append(Pawn(6, 1))
-# # game.black_player.pieces.append(Knight(2, 6))
-# game.white_player.pieces.append(King(1, 7))
-# game.white_player.pieces.append(Queen(4, 3))
-
-game.move("e2", "e4") #white
-game.move("e7", "e5") #black
-game.move("d2", "d3") #white
-game.move("d7", "d6") #black
-game.move("d1", "f3") #white
-game.move("c8", "f5")  #black
-game.move("b1", "c3")  #white
-game.move("b8", "c6")  #black
-game.move("c1", "e3")  #white
-game.move("d8", "g5")  #black
-game.bigCastling()
+game.white_player.pieces.append(King(1, 2))
+game.black_player.pieces.append(King(1, 7))
+game.white_player.pieces.append(Pawn(1, 7))
+game.move("a7", "a8")
 print(game.white_player.pieces)
 
 
