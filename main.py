@@ -19,11 +19,15 @@ game = Game()
 
 game.move("e2", "e4") #white
 game.move("e7", "e5") #black
-game.move("g1", "f3") #white
-game.move("b8", "c6") #black
-game.move("f1", "c4") #white
-game.move("d8", "f6")  #black
-game.smallCastling()
+game.move("d2", "d3") #white
+game.move("d7", "d6") #black
+game.move("d1", "f3") #white
+game.move("c8", "f5")  #black
+game.move("b1", "c3")  #white
+game.move("b8", "c6")  #black
+game.move("c1", "e3")  #white
+game.move("d8", "g5")  #black
+game.bigCastling()
 print(game.white_player.pieces)
 
 

@@ -29,6 +29,12 @@ class Game():
             self.white_player.smallCastling()
         else:
             self.black_player.smallCastling()
+            
+    def bigCastling(self):
+        if len(self.moves) % 2 == 0:
+            self.white_player.bigCastling()
+        else:
+            self.black_player.bigCastling()
 
     
     def canContinue(self, sourcePosition, destinationPosition):

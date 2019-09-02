@@ -203,3 +203,42 @@ class Player(object):
         else:
             raise CastingException("small castling impossible")
 
+    def bigCastling(self):
+        if self.color == "white":
+            knight_position = Position(2, 1)
+            bishop_position = Position(3, 1)
+            rook_position = Position(1, 1)
+            queen_position = Position(4, 1)
+        elif self.color == "black":
+            knight_position = Position(7, 8)
+            bishop_position = Position(6, 8)
+            rook_position = Position(8, 8)
+            queen_position = Position(4, 8)
+
+        possibles_opponent_moves = list()
+
+        for piece in self.opponent.pieces:
+            possibles_opponent_moves = possibles_opponent_moves + piece.getPossiblesMoves(self.opponent)
+        rook = self.findPiece(rook_position)
+        king = self.getKing()
+        bishop_not_here = not self.hasPiece(bishop_position)
+        knight_not_here = not self.hasPiece(knight_position)
+        queen_not_here = not self.hasPiece(queen_position)
+        movement = not rook.moved and not king.moved
+        big_castling_possible = movement \
+                                and bishop_not_here \
+                                and knight_not_here \
+                                and queen_not_here \
+                                and not bishop_position.isIn(possibles_opponent_moves) \
+                                and not knight_position.isIn(possibles_opponent_moves) \
+                                and not queen_position.isIn(possibles_opponent_moves)
+        print(knight_not_here)
+        if big_castling_possible:
+            if self.color == "white":
+                self.pieces[self.getPieceIndex(rook_position)].positions = Position(4, 1)
+                self.pieces[self.getPieceIndex(king.positions)].positions = Position(3, 1)
+            elif self.color == "black":
+                self.pieces[self.getPieceIndex(rook_position)].positions = Position(4, 8)
+                self.pieces[self.getPieceIndex(king.positions)].positions = Position(3, 8)
+        else:
+            raise CastingException("big castling impossible")
