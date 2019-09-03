@@ -14,7 +14,6 @@ class Pawn(Piece):
             y = 1
         elif player.color == "white":
             y = 8
-        print(self.positions)
         if self.positions.y == y:
             player.pieces[player.getPieceIndex(self.positions)] = Queen(self.positions.x, y)
 

@@ -1,4 +1,5 @@
 from Position import *
+from ChessRulesExceptions import PositionException
 class Piece():
     def __init__(self, x, y):
         self.positions = Position(x, y)
