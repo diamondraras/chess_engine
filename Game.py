@@ -16,12 +16,8 @@ class Game():
 
     def move(self, src, dst):
         # Conversion des notation algébrique en numérique
-        xSrc, ySrc = toNumberCoord(src)
-        xDst, yDst = toNumberCoord(dst)
-
-        # Conversion de la valeur numérique en objet position
-        source = Position(xSrc, ySrc)
-        destination = Position(xDst, yDst)
+        source = toNumberCoord(src)
+        destination = toNumberCoord(dst)
 
         # Verification qui ont le trait
         if len(self.moves) % 2 == 0:

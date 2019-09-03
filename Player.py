@@ -171,10 +171,8 @@ class Player(object):
                         mateable = False
                         break
                 if not mateable:
-                    print(piece,move)
                     break
             
-            print(mateable)
             # Si cette variable reste True alors le joueur a perdu ..
             if mateable:
                 self.checkmated = True

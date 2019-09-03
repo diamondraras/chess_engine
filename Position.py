@@ -44,6 +44,14 @@ class Position():
             if self.equals(move):
                 return True
         return False
+
+    def convertAlgebrical(self):
+        result = ""
+        aOrd = 96
+        result += chr(aOrd + self.x)
+        result += str(self.y)
+        return result
+
     
 def toNumberCoord(alphabetical):
     aOrd = 97
@@ -57,4 +65,5 @@ def toNumberCoord(alphabetical):
     else:
         raise PositionException("Positions must in chessboard")
 
-    return x, y
+    return Position(x, y)
+# def toAlgebricCoord(positions):
