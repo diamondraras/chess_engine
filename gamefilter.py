@@ -39,7 +39,7 @@ for i, line in enumerate(lines):
             toRemoveIndex.append(i)
 
 print("Total of datasets :", len(lines) - len(toRemoveIndex) )
-for i, element in enumerate(lines[52:]):
+for i, element in enumerate(lines[258:]):
     splited = element.split(" ")
     game = Game()
     game.startGame()
