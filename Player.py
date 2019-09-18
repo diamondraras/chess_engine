@@ -27,14 +27,16 @@ class Player(object):
         
         # Trouver la pièce en cours de déplacement
         piece = self.findPiece(sourcePosition)
+        acceptableAvoidingCheck = self.acceptable(sourcePosition, destinationPosition)
         if not self.checked:
-            
             # Mouvement normal si le joueur n'est pas en échec 
-            piece.changePosition(destinationPosition, self, game)
+            if acceptableAvoidingCheck:
+                piece.changePosition(destinationPosition, self, game)
+            else:
+                raise CheckException("You can't make yourself in check!")
         else:
-
             # Checher tous les coups permettant d'éviter l'échec
-            acceptableAvoidingCheck = self.acceptable(sourcePosition, destinationPosition)
+            # acceptableAvoidingCheck = self.acceptable(sourcePosition, destinationPosition)
             
             # Le joueur doit éviter l'échec s'il est attaqué par son adversaire sinon erreur
             if self.checked and acceptableAvoidingCheck:
@@ -46,7 +48,7 @@ class Player(object):
     def acceptable(self, sourcePosition, destinationPosition):
 
         # On clone l'objet pour éviter les mutations à l'objet original mais ça pas vraiment fonctionné ... :p
-        tempPlayer = copy(self)
+        tempPlayer = deepcopy(self)
 
         # On cherche tous les pieces du joueur en cours 
         all_pieces = tempPlayer.pieces
@@ -63,14 +65,11 @@ class Player(object):
         # On mute l'objet original pour la nouvelle piece avec la nouvelle position
         tempPlayer.pieces[index_of_piece] = piece_to_move
 
-        # On vérifie si le joueur est toujours en échecs
-        tempPlayer.check()
 
-        # On retoure la position muté à sa position originale
-        piece_to_move.positions = sourcePosition
-        tempPlayer.pieces[index_of_piece] = piece_to_move
-        
-        # Si ce coup est acceptabe pour éviter l'echec
+        if tempPlayer.opponent.hasPiece(destinationPosition):
+            opponentPiece = tempPlayer.findPiece(destinationPosition)
+            tempPlayer.opponent.remove_piece(opponentPiece.positions)
+        tempPlayer.check()
         return tempPlayer.checked == False
 
     def getKing(self):
@@ -92,7 +91,7 @@ class Player(object):
 
     def new_game(self):
         pieces = list()
-
+        self.pieces = list()
         # Pawn initialisation
         for i in range(1,9):
             if self.color == "black":
@@ -144,7 +143,7 @@ class Player(object):
                 piece.passable = False
 
     def remove_piece(self, positions):
-       for i, piece in enumerate(self.pieces):
+        for i, piece in enumerate(self.pieces):
             if piece.positions.equals(positions):
                 del self.pieces[i]
 
@@ -164,10 +163,12 @@ class Player(object):
 
             # On recherche tous les coups possibles de toutes les pièces
             for piece in self.pieces:
+                # print(piece)
+                # print(piece.getPossiblesMoves(self))
                 for move in piece.getPossiblesMoves(self):
-
                     # Si un seul coup permet de mettre le roi à l'abri alors pas d'échec et mat
                     if self.acceptable(piece.positions, move):
+
                         mateable = False
                         break
                 if not mateable:
@@ -186,6 +187,7 @@ class Player(object):
 
         # Si le roi est dans une position dangeureuse
         king_in_danger = king.positions.isIn(king_dangerous_positions)
+        # print(king.positions,king_dangerous_positions )
         if king_in_danger:
             self.checked = True
 
@@ -286,7 +288,6 @@ class Player(object):
                                 and knight_not_here \
                                 and queen_not_here \
                                 and not bishop_position.isIn(possibles_opponent_moves) \
-                                and not knight_position.isIn(possibles_opponent_moves) \
                                 and not queen_position.isIn(possibles_opponent_moves)
         if big_castling_possible:
             if self.color == "white":

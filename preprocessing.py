@@ -10,40 +10,47 @@ for i, line in enumerate(lines):
     vec = line.split(" ")
     
     if vec[2] == "1/2-1/2":
-        print(vec[0])
-        del lines[i]
+        # print(vec[0])
+        lines[i] = ""
+        break
     else :
         result = vec[2].split('-')
         try:
             # Always promote to Queen
+            toBreak = False
             for e in vec:
                 egalIndex = vec.index("=")
                 if vec[egalIndex+1] !="Q":
-                    del lines[i]
-            
+                    lines[i]=""
+                    toBreak = True
+                    break
+            if toBreak:
+                break
+                    
         except ValueError:
             pass
-        try:
-            whiteWinButWeak = not (int(result[0]) == 1 and int(vec[3]) > eloLimit)
-            blackWinButWeak = not (int(result[1]) == 1 and int(vec[4]) > eloLimit)
-            if whiteWinButWeak:
-                del lines[i]
-            elif blackWinButWeak:
-                del lines[i]
-            
-        except Exception:
-            del lines[i]
+        whiteWinButWeak = not (int(result[0]) == 1 and int(vec[3]) > eloLimit)
+        blackWinButWeak = not (int(result[1]) == 1 and int(vec[4]) > eloLimit)
+        if whiteWinButWeak:
+            lines[i] = ""
+        elif blackWinButWeak:
+            lines[i] = ""
 
 sn = 0
 bn = 0
 hafa = 0
-# print(len(lines))
-for i, line in enumerate(lines):
+error = 0
+# print(lines[1])
+
+lines = [line for line in lines if line]
+print(len(lines))
+for i, line in enumerate(lines[2:3]):
+    # print(line[2], line[3])
     game = Game()
     game.startGame()
     line = line.split(" ")
     games = [row.split(".")[1] for row in line[17:] if row]
-    print(games)
+    # print(games)
 
     pieces_notations = ["R", "B", "N", "Q", "K"]
     
@@ -155,22 +162,23 @@ for i, line in enumerate(lines):
             # print(source.convertAlgebrical(), destination.convertAlgebrical())
             # print(current_player.color, current_player.pieces, "\n\n")
             # print(current_player.color, current_player.opponent.pieces)
-            try:
-                game.move(source.convertAlgebrical(), destination.convertAlgebrical())
-            except Exception as e:
-                print(line)
+            game.move(source.convertAlgebrical(), destination.convertAlgebrical())
+                # print(line)
+                # error = error +1
                 # print(j, move)
                 # print(x)
                 # print(precision)
-                raise Exception(e)
+                # raise Exception(e)
             # print(current_player.color, move)
             # print("source : ", source, "destination : ", destination, "type_of_piece : ", name[type_of_piece], end = "\n\n")
             
             # print(current_player.pieces)
             # print(destination)
             # print(source)
-                
+# print(error)
         # break
     # break
+print("white :"+str(game.white_player.pieces))
+print("black :"+str(game.black_player.pieces))
 # print(sn, bn)
 # print(hafa)
