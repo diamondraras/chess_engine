@@ -21,7 +21,8 @@ class Piece():
         player.opponent.drawsCheck()
     def typeOf(self):
         return type(self).__name__
-
+    def getNotation(self):
+        raise NotImplementedError
     def __repr__(self):
         return self.typeOf() + " " + str(self.positions) + "\n"
 

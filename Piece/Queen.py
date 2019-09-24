@@ -27,3 +27,5 @@ class Queen(Piece):
                     break
 
         return all_possibles_moves
+    def getNotation(self):
+        return "Q"

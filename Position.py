@@ -52,6 +52,12 @@ class Position():
         result += str(self.y)
         return result
 
+    def getRepresentation(self):
+        representation = [0] * 64
+        index = (8 * (self.y - 1) + self.x) - 1
+        representation[index] = 1
+        return representation
+
     
 def toNumberCoord(alphabetical):
     aOrd = 97
@@ -66,4 +72,5 @@ def toNumberCoord(alphabetical):
         raise PositionException("Positions must in chessboard")
 
     return Position(x, y)
+
 # def toAlgebricCoord(positions):

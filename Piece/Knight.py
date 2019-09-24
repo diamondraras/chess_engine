@@ -22,3 +22,5 @@ class Knight(Piece):
             except Exception:
                 pass
         return all_possibles_moves
+    def getNotation(self):
+        return "N"

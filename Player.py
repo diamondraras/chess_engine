@@ -284,10 +284,6 @@ class Player(object):
         queen_not_here = not self.hasPiece(queen_position)
         movement = not rook.moved and not king.moved
 
-
-        print()
-
-
         big_castling_possible = movement \
                                 and bishop_not_here \
                                 and knight_not_here \
@@ -303,3 +299,15 @@ class Player(object):
                 self.pieces[self.getPieceIndex(king.positions)].positions = Position(3, 8)
         else:
             raise CastingException("big castling impossible")
+
+    
+    def getBoard(self):
+        board = [0]*128
+        for myPiece in self.pieces:
+            index = (8 * (myPiece.positions.y - 1) + myPiece.positions.x) - 1
+            board[index] = myPiece.getNotation()
+        for opponentPiece in self.opponent.pieces:
+            index = (8 * (opponentPiece.positions.y - 1) + opponentPiece.positions.x) + 63
+            board[index] = opponentPiece.getNotation()
+        # print(board)
+        return board

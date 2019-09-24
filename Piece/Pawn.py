@@ -15,7 +15,6 @@ class Pawn(Piece):
         elif player.color == "white":
             y = 8
         if self.positions.y == y:
-            print('promotion')
             player.pieces[player.getPieceIndex(self.positions)] = Queen(self.positions.x, y)
 
     def changePosition(self, destination_position,player, game):
@@ -107,4 +106,6 @@ class Pawn(Piece):
         return Pmoves
 
     def __repr__(self):
-        return self.typeOf()+" "+str(self.positions)+" "+str(self.passable)+"\n"
+        return self.typeOf() + " " + str(self.positions) + " " + str(self.passable) + "\n"
+    def getNotation(self):
+        return "P"

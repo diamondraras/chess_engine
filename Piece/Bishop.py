@@ -27,3 +27,5 @@ class Bishop(Piece):
                     break
 
         return all_possibles_moves
+    def getNotation(self):
+        return "B"

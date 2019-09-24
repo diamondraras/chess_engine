@@ -71,4 +71,5 @@ class King(Piece):
             if not move.isIn(dangerous_positions) and not move.isIn(possibles_moves):
                 possibles_moves.append(move)
         return possibles_moves
-    
+    def getNotation(self):
+        return "K"
