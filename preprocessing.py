@@ -2,7 +2,7 @@ from Game import *
 from Position import *
 from ChessRulesExceptions import *
 import os.path
-
+import random
 outputFile = "../dataset/chessgames.csv"
 
 with open("../dataset/500parties.txt", "r") as file:
@@ -263,8 +263,8 @@ try:
         if not hasError:
             datasetLen += int(splited[5])
             with open(outputFile, "a", newline="") as csvfile:
+                spamwriter = writer(csvfile, delimiter=";", quotechar='|')
                 for _ in oneGameDatas:
-                    spamwriter = writer(csvfile, delimiter=";", quotechar='|')
                     # print(_)
                     spamwriter.writerow(_)
         # break
@@ -275,3 +275,21 @@ except KeyboardInterrupt:
     print("total of error", errorNumber)
     print("total of moves : ", datasetLen)
 
+response = input("do you want to remove the duplicates and shuffle? (yes/no)")
+
+if response == "yes":
+    with open(outputFile, mode='r', encoding="utf-8") as csvfile:
+        data = reader(csvfile, delimiter=";")
+        filtered = list()
+        i = 0
+        for a in data:
+            if a not in filtered:
+                filtered.append(a)
+
+    random.shuffle(filtered)
+    print("total of filtered",len(filtered))
+    os.remove(outputFile)
+    with open(outputFile, "w", newline="") as csvfile:
+        for e in filtered:
+            spamwriter = writer(csvfile, delimiter=";", quotechar='|')
+            spamwriter.writerow(e)
