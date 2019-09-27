@@ -5,10 +5,10 @@ import os.path
 import random
 outputFile = "../dataset/chessgames.csv"
 
-with open("../dataset/500parties.txt", "r") as file:
+with open("../dataset/all.txt", "r") as file:
     data = file.read()
 from csv import *
-eloLimit = 2300
+eloLimit = 2500
 lines = data.split('\n')[5:]
 
 toRemoveIndex = list()
@@ -258,6 +258,7 @@ try:
                             hasError = True
                             break
         except Exception :
+            errorNumber += 1
             continue
             # break
         if not hasError:
@@ -279,14 +280,19 @@ response = input("do you want to remove the duplicates and shuffle? (yes/no)")
 
 if response == "yes":
     with open(outputFile, mode='r', encoding="utf-8") as csvfile:
-        data = reader(csvfile, delimiter=";")
-        filtered = list()
-        i = 0
-        for a in data:
-            if a not in filtered:
-                filtered.append(a)
+        data = list(reader(csvfile, delimiter=";"))
 
+        filtered = list(data)
+        i = 0
+        for i, a in enumerate(data[:-1]):
+            for j, b in enumerate(data[i+1:]):
+                if a == b :
+                    filtered[i] = ""
+
+    print("total of valid dataset",len(data))
+    filtered = [row for row in filtered if row]
     random.shuffle(filtered)
+
     print("total of filtered",len(filtered))
     os.remove(outputFile)
     with open(outputFile, "w", newline="") as csvfile:
