@@ -11,6 +11,8 @@ from ChessRulesExceptions import CheckMateException
 from ChessRulesExceptions import CastingException
 from Position import *
 from copy import *
+
+
 class Player(object):
     def __init__(self, color):
         self.color = color
@@ -18,18 +20,19 @@ class Player(object):
         self.checked = False
         self.checkmated = False
         self.draws = False
-    
+
     def movePiece(self, sourcePosition, destinationPosition, game):
 
         # Le jeu ne peut pas continuer si le joueur courant est en echec et mat
         if self.checkmated:
             raise CheckMateException(self.color + " is already checkmated !")
-        
+
         # Trouver la pièce en cours de déplacement
         piece = self.findPiece(sourcePosition)
-        acceptableAvoidingCheck = self.acceptable(sourcePosition, destinationPosition)
+        acceptableAvoidingCheck = self.acceptable(
+            sourcePosition, destinationPosition)
         if not self.checked:
-            # Mouvement normal si le joueur n'est pas en échec 
+            # Mouvement normal si le joueur n'est pas en échec
             if acceptableAvoidingCheck:
                 piece.changePosition(destinationPosition, self, game)
             else:
@@ -37,20 +40,20 @@ class Player(object):
         else:
             # Checher tous les coups permettant d'éviter l'échec
             # acceptableAvoidingCheck = self.acceptable(sourcePosition, destinationPosition)
-            
+
             # Le joueur doit éviter l'échec s'il est attaqué par son adversaire sinon erreur
             if self.checked and acceptableAvoidingCheck:
                 piece.changePosition(destinationPosition, self, game)
                 self.checked = False
             else:
                 raise CheckException("Check positions must be prevented !")
-            
+
     def acceptable(self, sourcePosition, destinationPosition):
 
         # On clone l'objet pour éviter les mutations à l'objet original mais ça pas vraiment fonctionné ... :p
         tempPlayer = deepcopy(self)
 
-        # On cherche tous les pieces du joueur en cours 
+        # On cherche tous les pieces du joueur en cours
         all_pieces = tempPlayer.pieces
 
         # Quel est la piece qui sera deplacée
@@ -65,7 +68,6 @@ class Player(object):
         # On mute l'objet original pour la nouvelle piece avec la nouvelle position
         tempPlayer.pieces[index_of_piece] = piece_to_move
 
-
         if tempPlayer.opponent.hasPiece(destinationPosition):
             opponentPiece = tempPlayer.findPiece(destinationPosition)
             tempPlayer.opponent.remove_piece(opponentPiece.positions)
@@ -77,11 +79,12 @@ class Player(object):
             if piece.typeOf() == "King":
                 return piece
 
-    def findPiece(self,positions):
+    def findPiece(self, positions):
         for piece in self.pieces:
             if piece.positions.equals(positions):
                 return piece
-        raise PositionException(self.color+" : No matching piece in x="+str(positions.x)+",y="+str(positions.y))
+        raise PositionException(
+            self.color+" : No matching piece in x="+str(positions.x)+",y="+str(positions.y))
 
     def hasPiece(self, positions):
         for piece in self.pieces:
@@ -93,12 +96,12 @@ class Player(object):
         pieces = list()
         self.pieces = list()
         # Pawn initialisation
-        for i in range(1,9):
+        for i in range(1, 9):
             if self.color == "black":
                 pieces.append(Pawn(i, 7))
             if self.color == "white":
                 pieces.append(Pawn(i, 2))
-                
+
         # Rook initialisation
         if self.color == "black":
             pieces.append(Rook(1, 8))
@@ -106,7 +109,7 @@ class Player(object):
         if self.color == "white":
             pieces.append(Rook(1, 1))
             pieces.append(Rook(8, 1))
-            
+
         # Knight initialisation
         if self.color == "black":
             pieces.append(Knight(2, 8))
@@ -114,7 +117,7 @@ class Player(object):
         if self.color == "white":
             pieces.append(Knight(2, 1))
             pieces.append(Knight(7, 1))
-        
+
         # Bishop initialisation
         if self.color == "black":
             pieces.append(Bishop(3, 8))
@@ -173,7 +176,7 @@ class Player(object):
                         break
                 if not mateable:
                     break
-            
+
             # Si cette variable reste True alors le joueur a perdu ..
             if mateable:
                 self.checkmated = True
@@ -210,16 +213,15 @@ class Player(object):
             if len(possibles_moves) == 0:
                 self.draws = True
                 self.opponent.draws = True
-            else :
+            else:
                 self.draws = False
                 self.opponent.draws = False
-    
+
     def getPieceIndex(self, positions):
         for i, piece in enumerate(self.pieces):
             if piece.positions.equals(positions):
                 return i
         raise PositionException("No pieces found in " + positions)
-    
 
     def smallCastling(self):
 
@@ -237,8 +239,8 @@ class Player(object):
 
         # Recherche de tous les coups de l'adversaire
         for piece in self.opponent.pieces:
-            possibles_opponent_moves = possibles_opponent_moves + piece.getPossiblesMoves(self.opponent)
-
+            possibles_opponent_moves = possibles_opponent_moves + \
+                piece.getPossiblesMoves(self.opponent)
 
         rook = self.findPiece(rook_position)
         king = self.getKing()
@@ -246,18 +248,22 @@ class Player(object):
         knight_not_here = not self.hasPiece(knight_position)
         movement = not rook.moved and not king.moved
         smallCastlingPossible = movement \
-                                and bishop_not_here \
-                                and knight_not_here \
-                                and not bishop_position.isIn(possibles_opponent_moves) \
-                                and not knight_position.isIn(possibles_opponent_moves)
+            and bishop_not_here \
+            and knight_not_here \
+            and not bishop_position.isIn(possibles_opponent_moves) \
+            and not knight_position.isIn(possibles_opponent_moves)
         # Si tous les conditions de roque sont satisfaites
         if smallCastlingPossible:
             if self.color == "white":
-                self.pieces[self.getPieceIndex(rook_position)].positions = Position(6, 1)
-                self.pieces[self.getPieceIndex(king.positions)].positions = Position(7, 1)
+                self.pieces[self.getPieceIndex(
+                    rook_position)].positions = Position(6, 1)
+                self.pieces[self.getPieceIndex(
+                    king.positions)].positions = Position(7, 1)
             elif self.color == "black":
-                self.pieces[self.getPieceIndex(rook_position)].positions = Position(6, 8)
-                self.pieces[self.getPieceIndex(king.positions)].positions = Position(7, 8)
+                self.pieces[self.getPieceIndex(
+                    rook_position)].positions = Position(6, 8)
+                self.pieces[self.getPieceIndex(
+                    king.positions)].positions = Position(7, 8)
         else:
             raise CastingException("small castling impossible")
 
@@ -276,7 +282,8 @@ class Player(object):
         possibles_opponent_moves = list()
 
         for piece in self.opponent.pieces:
-            possibles_opponent_moves = possibles_opponent_moves + piece.getPossiblesMoves(self.opponent)
+            possibles_opponent_moves = possibles_opponent_moves + \
+                piece.getPossiblesMoves(self.opponent)
         rook = self.findPiece(rook_position)
         king = self.getKing()
         bishop_not_here = not self.hasPiece(bishop_position)
@@ -285,29 +292,32 @@ class Player(object):
         movement = not rook.moved and not king.moved
 
         big_castling_possible = movement \
-                                and bishop_not_here \
-                                and knight_not_here \
-                                and queen_not_here \
-                                and not bishop_position.isIn(possibles_opponent_moves) \
-                                and not queen_position.isIn(possibles_opponent_moves)
+            and bishop_not_here \
+            and knight_not_here \
+            and queen_not_here \
+            and not bishop_position.isIn(possibles_opponent_moves) \
+            and not queen_position.isIn(possibles_opponent_moves)
         if big_castling_possible:
             if self.color == "white":
-                self.pieces[self.getPieceIndex(rook_position)].positions = Position(4, 1)
-                self.pieces[self.getPieceIndex(king.positions)].positions = Position(3, 1)
+                self.pieces[self.getPieceIndex(
+                    rook_position)].positions = Position(4, 1)
+                self.pieces[self.getPieceIndex(
+                    king.positions)].positions = Position(3, 1)
             elif self.color == "black":
-                self.pieces[self.getPieceIndex(rook_position)].positions = Position(4, 8)
-                self.pieces[self.getPieceIndex(king.positions)].positions = Position(3, 8)
+                self.pieces[self.getPieceIndex(
+                    rook_position)].positions = Position(4, 8)
+                self.pieces[self.getPieceIndex(
+                    king.positions)].positions = Position(3, 8)
         else:
             raise CastingException("big castling impossible")
 
-    
     def getBoard(self):
-        board = [0]*128
+        board = [0]*64
         for myPiece in self.pieces:
             index = (8 * (myPiece.positions.y - 1) + myPiece.positions.x) - 1
-            board[index] = myPiece.getNotation()
+            board[index] = 'W' + myPiece.getNotation()
         for opponentPiece in self.opponent.pieces:
-            index = (8 * (opponentPiece.positions.y - 1) + opponentPiece.positions.x) + 63
-            board[index] = opponentPiece.getNotation()
-        # print(board)
+            index = (8 * (opponentPiece.positions.y - 1) +
+                     opponentPiece.positions.x) + -1
+            board[index] = 'L' + opponentPiece.getNotation()
         return board

@@ -1,5 +1,7 @@
 from Piece.Piece import *
 from Position import *
+
+
 class Knight(Piece):
 
     def changePosition(self, destination_position, player, game):
@@ -11,16 +13,19 @@ class Knight(Piece):
 
     def getPossiblesMoves(self, player):
         all_possibles_moves = list()
-        movables = [(-2, 1), (-1, 2), (1, 2), (2, 1), (2, -1), (1, -2), (-1, -2), (-2, -1)]
-        
+        movables = [(-2, 1), (-1, 2), (1, 2), (2, 1),
+                    (2, -1), (1, -2), (-1, -2), (-2, -1)]
+
         for movable in movables:
 
             try:
-                pos = Position(self.positions.x + movable[0], self.positions.y + movable[1])
+                pos = Position(self.positions.x +
+                               movable[0], self.positions.y + movable[1])
                 if not player.hasPiece(pos):
                     all_possibles_moves.append(pos)
             except Exception:
                 pass
         return all_possibles_moves
+
     def getNotation(self):
-        return "N"
+        return 'N'

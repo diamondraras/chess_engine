@@ -7,8 +7,8 @@ class Position():
         self.x = x
         self.y = y
 
-    def equals(self,positions):
-        if self.x==positions.x and self.y==positions.y:
+    def equals(self, positions):
+        if self.x == positions.x and self.y == positions.y:
             return True
         else:
             return False
@@ -22,7 +22,8 @@ class Position():
         del temp_player.pieces[index_of_piece]
         moves_without_piece = list()
         for piece in temp_player.pieces:
-            moves_without_piece = moves_without_piece + piece.getPossiblesMoves(temp_player)
+            moves_without_piece = moves_without_piece + \
+                piece.getPossiblesMoves(temp_player)
         temp_player.pieces.append(temp_piece)
         if self.isIn(moves_without_piece):
             return True
@@ -35,9 +36,9 @@ class Position():
                 object.__setattr__(self, attr_name, attr_val)
             else:
                 raise PositionException("Positions must in chessboard")
-    
+
     def __repr__(self):
-        return "x="+str(self.x)+" "+ "y="+str(self.y)
+        return "x="+str(self.x)+" " + "y="+str(self.y)
 
     def isIn(self, possibles_moves):
         for move in possibles_moves:
@@ -53,12 +54,10 @@ class Position():
         return result
 
     def getRepresentation(self):
-        representation = [0] * 64
         index = (8 * (self.y - 1) + self.x) - 1
-        representation[index] = 1
-        return representation
+        return index
 
-    
+
 def toNumberCoord(alphabetical):
     aOrd = 97
     hOrd = 104
@@ -66,7 +65,7 @@ def toNumberCoord(alphabetical):
     xOrd = ord(alphabetical[0].lower())
     y = int(alphabetical[1])
 
-    if xOrd <= hOrd and xOrd >= aOrd and y>=1 and y<=8:
+    if xOrd <= hOrd and xOrd >= aOrd and y >= 1 and y <= 8:
         x = xOrd - 96
     else:
         raise PositionException("Positions must in chessboard")

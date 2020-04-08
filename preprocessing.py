@@ -1,14 +1,15 @@
+import pandas as pd
+from csv import *
 from Game import *
 from Position import *
 from ChessRulesExceptions import *
 import os.path
 import random
-outputFile = "../dataset/chessgames.csv"
+outputFile = "../dataset/move_from_dataset.csv"
 
-with open("../dataset/all.txt", "r") as file:
+with open("../dataset/500parties.txt", "r") as file:
     data = file.read()
-from csv import *
-eloLimit = 2500
+eloLimit = 2800
 lines = data.split('\n')[5:]
 
 toRemoveIndex = list()
@@ -24,7 +25,7 @@ for i, line in enumerate(lines):
         for e in vec:
             try:
                 egalIndex = e.index("=")
-                if e[egalIndex+1] !="Q":
+                if e[egalIndex+1] != "Q":
                     toRemoveIndex.append(i)
                     break
             except Exception as error:
@@ -41,10 +42,9 @@ for i, line in enumerate(lines):
                 belolow = int(vec[4]) < eloLimit
                 if belolow:
                     toRemoveIndex.append(i)
-            
+
         except ValueError as error:
             toRemoveIndex.append(i)
-
 
 
 errorNumber = 0
@@ -56,6 +56,19 @@ if os.path.exists(outputFile):
     print("removing existing file")
     os.remove(outputFile)
 
+# write header
+with open(outputFile, "a", newline="") as csvfile:
+    spamwriter = writer(csvfile, delimiter=";")
+
+    alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+    line = list()
+    for i in range(1, 9):
+        for j in range(1, 9):
+            # print(_)
+            line.append(f'{alphabet[j-1]}{i}')
+    line += ['MOVE FROM']
+    spamwriter.writerow(line)
+
 try:
 
     for i, element in enumerate(lines):
@@ -65,13 +78,13 @@ try:
         game.startGame()
         gameResult = splited[2].split('-')
         moves = [row.split(".")[1] for row in splited[17:] if row]
-        
+
         oneGameDatas = list()
         if result[0]:
             winnerPlayer = game.white_player
         else:
             winnerPlayer = game.black_player
-            
+
         hasError = False
         try:
 
@@ -102,13 +115,9 @@ try:
                     else:
                         current_player = game.black_player
 
-
                     if move == "O-O":
 
                         try:
-
-
-                            boardRepresentation = winnerPlayer.getBoard()
 
                             if current_player.color == "white":
                                 sourceIndex = 4
@@ -116,16 +125,13 @@ try:
                             else:
                                 sourceIndex = 60
                                 destIndex = 62
-                            
 
-                            sourceRepresentation = [0]*64
-                            sourceRepresentation[sourceIndex] = 1
-                            destinationRepresentation = [0]*64
-                            destinationRepresentation[destIndex] = 1
-                            data = boardRepresentation + sourceRepresentation + destinationRepresentation
+                            boardRepresentation = winnerPlayer.getBoard()
+
+                            # Save board and source/destination
+                            data = boardRepresentation + \
+                                [sourceIndex]
                             oneGameDatas.append(data)
-
-
 
                             game.smallCastling()
                         except Exception as error:
@@ -134,7 +140,7 @@ try:
                             print("white", game.white_player.pieces)
                             print("black", game.black_player.pieces)
                             raise(error)
-                        
+
                     elif move == "O-O-O":
                         try:
                             boardRepresentation = winnerPlayer.getBoard()
@@ -145,14 +151,14 @@ try:
                             else:
                                 sourceIndex = 60
                                 destIndex = 58
-                            
-                            sourceRepresentation = [0]*64
-                            sourceRepresentation[sourceIndex] = 1
-                            destinationRepresentation = [0]*64
-                            destinationRepresentation[destIndex] = 1
-                            data = boardRepresentation + sourceRepresentation + destinationRepresentation
-                            oneGameDatas.append(data)
 
+                            sourceRepresentation = sourceIndex
+                            destinationRepresentation = destIndex
+
+                            # Save board and source/destination
+                            data = boardRepresentation + \
+                                [sourceRepresentation]
+                            oneGameDatas.append(data)
                             game.bigCastling()
 
                         except Exception as error:
@@ -188,7 +194,7 @@ try:
                                 type_of_piece = move[0]
                                 dst = move[-2:]
                                 precision = move[1]
-                        
+
                         name = dict()
                         name['N'] = "Knight"
                         name['R'] = "Rook"
@@ -196,13 +202,13 @@ try:
                         name['Q'] = "Queen"
                         name['B'] = "Bishop"
                         name['P'] = "Pawn"
-                        
 
                         destination = toNumberCoord(dst)
                         if not precision:
                             for piece in current_player.pieces:
                                 if piece.typeOf() == name[type_of_piece]:
-                                    piece_possibilities = piece.getPossiblesMoves(current_player)
+                                    piece_possibilities = piece.getPossiblesMoves(
+                                        current_player)
                                     if destination.isIn(piece_possibilities) and current_player.acceptable(piece.positions, destination):
                                         source = piece.positions
                                         break
@@ -210,7 +216,8 @@ try:
                             sources = list()
                             for piece in current_player.pieces:
                                 if piece.typeOf() == name[type_of_piece]:
-                                    piece_possibilities = piece.getPossiblesMoves(current_player)
+                                    piece_possibilities = piece.getPossiblesMoves(
+                                        current_player)
                                     if destination.isIn(piece_possibilities):
                                         sources.append(piece.positions)
                             # print("destination", destination)
@@ -230,21 +237,19 @@ try:
                                         source = e
                                         break
                         # print(source, destination)
-
-
-                        # Save board and source/destination
-
                         boardRepresentation = winnerPlayer.getBoard()
                         sourceRepresentation = source.getRepresentation()
                         destinationRepresentation = destination.getRepresentation()
-                        data = boardRepresentation + sourceRepresentation + destinationRepresentation
+                        # Save board and source/destination
+                        data = boardRepresentation + \
+                            [sourceRepresentation]
                         oneGameDatas.append(data)
                         try:
                             # print(current_player.checkmated)
                             # print(source.convertAlgebrical(), destination.convertAlgebrical())
 
-
-                            game.move(source.convertAlgebrical(), destination.convertAlgebrical())
+                            game.move(source.convertAlgebrical(),
+                                      destination.convertAlgebrical())
                         except PositionException as error:
                             errorNumber += 1
                             hasError = True
@@ -257,10 +262,12 @@ try:
                             errorNumber += 1
                             hasError = True
                             break
-        except Exception :
+
+        except Exception as e:
+            print(e)
             errorNumber += 1
             continue
-            # break
+            break
         if not hasError:
             datasetLen += int(splited[5])
             with open(outputFile, "a", newline="") as csvfile:
@@ -276,26 +283,16 @@ except KeyboardInterrupt:
     print("total of error", errorNumber)
     print("total of moves : ", datasetLen)
 
-response = input("do you want to remove the duplicates and shuffle? (yes/no)")
+data = pd.read_csv(outputFile, delimiter=';')
+before = data.shape[0]
+print("length before : ", before)
+data = data.drop_duplicates()
+after = data.shape[0]
+print("length after : ", after)
+print("duplicates removed :", before-after)
 
-if response == "yes":
-    with open(outputFile, mode='r', encoding="utf-8") as csvfile:
-        data = list(reader(csvfile, delimiter=";"))
-
-        filtered = list(data)
-        i = 0
-        for i, a in enumerate(data[:-1]):
-            for j, b in enumerate(data[i+1:]):
-                if a == b :
-                    filtered[i] = ""
-
-    print("total of valid dataset",len(data))
-    filtered = [row for row in filtered if row]
-    random.shuffle(filtered)
-
-    print("total of filtered",len(filtered))
+if os.path.exists(outputFile):
+    print("removing existing file")
     os.remove(outputFile)
-    with open(outputFile, "w", newline="") as csvfile:
-        for e in filtered:
-            spamwriter = writer(csvfile, delimiter=";", quotechar='|')
-            spamwriter.writerow(e)
+
+data.to_csv(outputFile)

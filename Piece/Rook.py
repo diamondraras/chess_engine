@@ -1,5 +1,7 @@
 from Piece.Piece import *
 from Position import *
+
+
 class Rook(Piece):
     def __init__(self, x, y):
         super().__init__(x, y)
@@ -12,15 +14,17 @@ class Rook(Piece):
             self.canContinue(destination_position, player, game)
         else:
             raise PositionException("impossible rook's move")
+
     def getPossiblesMoves(self, player):
         all_possibles_moves = list()
         movables = [(-1, 0), (0, -1), (1, 0), (0, 1)]
-        
+
         for movable in movables:
-            i=1
+            i = 1
             while True:
                 try:
-                    pos = Position(self.positions.x + (movable[0]) * i, self.positions.y + (movable[1] * i))
+                    pos = Position(
+                        self.positions.x + (movable[0]) * i, self.positions.y + (movable[1] * i))
                     if player.hasPiece(pos):
                         break
                     elif player.opponent.hasPiece(pos):
@@ -32,5 +36,6 @@ class Rook(Piece):
                     break
 
         return all_possibles_moves
+
     def getNotation(self):
-        return "R"
+        return 'R'
