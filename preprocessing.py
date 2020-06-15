@@ -5,14 +5,23 @@ from Position import *
 from ChessRulesExceptions import *
 import os.path
 import random
-outputFile = "../dataset/move_from_dataset.csv"
+outputFile = "../dataset/CHESS_DATA.csv"
 
 with open("../dataset/500parties.txt", "r") as file:
     data = file.read()
-eloLimit = 2800
+eloLimit = 2500
 lines = data.split('\n')[5:]
 
 toRemoveIndex = list()
+
+
+def toAlgebrical(num):
+    alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+    line = list()
+    for i in range(1, 9):
+        for j in range(1, 9):
+            line.append(f'{alphabet[j-1]}{i}')
+    return line[num]
 
 
 for i, line in enumerate(lines):
@@ -33,12 +42,10 @@ for i, line in enumerate(lines):
 
         try:
             if result[0]:
-                winner = "white"
                 welolow = int(vec[3]) < eloLimit
                 if welolow:
                     toRemoveIndex.append(i)
             else:
-                winner = "black"
                 belolow = int(vec[4]) < eloLimit
                 if belolow:
                     toRemoveIndex.append(i)
@@ -66,7 +73,8 @@ with open(outputFile, "a", newline="") as csvfile:
         for j in range(1, 9):
             # print(_)
             line.append(f'{alphabet[j-1]}{i}')
-    line += ['MOVE FROM']
+    line += ['MOVE_FROM']
+    line += ['MOVE_TO']
     spamwriter.writerow(line)
 
 try:
@@ -80,15 +88,17 @@ try:
         moves = [row.split(".")[1] for row in splited[17:] if row]
 
         oneGameDatas = list()
-        if result[0]:
-            winnerPlayer = game.white_player
-        else:
-            winnerPlayer = game.black_player
 
         hasError = False
         try:
 
             if not i in toRemoveIndex:
+                if int(gameResult[0]) == 1:
+                    winnerPlayer = game.white_player
+                elif int(gameResult[0]) == 0:
+                    winnerPlayer = game.black_player
+                else:
+                    print('erreur')
                 pieces_notations = ["R", "B", "N", "Q", "K"]
                 # print(len(moves))
                 for j, move in enumerate(moves):
@@ -130,7 +140,7 @@ try:
 
                             # Save board and source/destination
                             data = boardRepresentation + \
-                                [sourceIndex]
+                                [toAlgebrical(sourceIndex)] + [toAlgebrical(destIndex)]
                             oneGameDatas.append(data)
 
                             game.smallCastling()
@@ -152,12 +162,12 @@ try:
                                 sourceIndex = 60
                                 destIndex = 58
 
-                            sourceRepresentation = sourceIndex
-                            destinationRepresentation = destIndex
+                            sourceRepresentation = toAlgebrical(sourceIndex)
+                            destinationRepresentation = toAlgebrical(destIndex)
 
                             # Save board and source/destination
                             data = boardRepresentation + \
-                                [sourceRepresentation]
+                                [sourceRepresentation] +[destinationRepresentation]
                             oneGameDatas.append(data)
                             game.bigCastling()
 
@@ -238,11 +248,12 @@ try:
                                         break
                         # print(source, destination)
                         boardRepresentation = winnerPlayer.getBoard()
-                        sourceRepresentation = source.getRepresentation()
-                        destinationRepresentation = destination.getRepresentation()
+                        sourceRepresentation = toAlgebrical(
+                            source.getRepresentation())
+                        destinationRepresentation = toAlgebrical(destination.getRepresentation())
                         # Save board and source/destination
                         data = boardRepresentation + \
-                            [sourceRepresentation]
+                            [sourceRepresentation] + [destinationRepresentation]
                         oneGameDatas.append(data)
                         try:
                             # print(current_player.checkmated)
@@ -287,12 +298,20 @@ data = pd.read_csv(outputFile, delimiter=';')
 before = data.shape[0]
 print("length before : ", before)
 data = data.drop_duplicates()
+data = data.reset_index(drop=True)
 after = data.shape[0]
 print("length after : ", after)
 print("duplicates removed :", before-after)
 
+alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+x_columns = list()
+for i in range(1, 9):
+    for j in range(1, 9):
+        x_columns.append(f'{alphabet[j-1]}{i}')
+
 if os.path.exists(outputFile):
     print("removing existing file")
     os.remove(outputFile)
-
-data.to_csv(outputFile)
+# header = x_columns+['MOVE_FROM']+['MOVE_TO']
+print(data)
+data.to_csv(outputFile,index=False)
